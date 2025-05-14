@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { TareasService } from './tareas.service';
 import { CreateTareaDto } from './dto/create-tarea.dto';
 import { UpdateTareaDto } from './dto/update-tarea.dto';
@@ -17,13 +17,18 @@ export class TareasController {
         return this.tareasService.findAll();
     }
 
-    @Get(':Asignado_a')
-    findByUsuario(@Param('Asignado_a') Asignado_a: string) {
-        return this.tareasService.findByUsuario(Asignado_a);
+    // @Get(':Asignado_a')
+    // findByUsuario(@Param('Asignado_a') Asignado_a: string) {
+    //     return this.tareasService.findByUsuario(Asignado_a);
+    // }
+
+    @Get(':estadoTarea')
+    findByEstado(@Param('estadoTarea') estadoTarea: string) {
+        return this.tareasService.findByEstado(estadoTarea);
     }
 
-    // @Patch(':Id')
-    // update(@Param('Id') Id: string, @Body() updateTareaDto: UpdateTareaDto) {
-    //     return this.tareasService.update(Id, updateTareaDto);
-    // }
+    @Put(':id')
+    update(@Param('id') _id: string, @Body() updateTareaDto: UpdateTareaDto) {
+        return this.tareasService.update(_id, updateTareaDto);
+    }
 }

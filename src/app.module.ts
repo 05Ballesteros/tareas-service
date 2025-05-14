@@ -6,7 +6,7 @@ import { TareasModule } from './tareas/tareas.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://admin:root@localhost:27017/ticketView?authSource=admin&directConnection=true'),
+    MongooseModule.forRoot(`mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}/${process.env.MONGODB_DATABASE}?authSource=admin&directConnection=true`),
     TareasModule,
   ],
   controllers: [],

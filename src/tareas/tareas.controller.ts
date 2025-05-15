@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, Req } from '@nestjs/common';
 import { TareasService } from './tareas.service';
 import { CreateTareaDto } from './dto/create-tarea.dto';
 import { UpdateTareaDto } from './dto/update-tarea.dto';
+import { JWtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('tareas')
 export class TareasController {
@@ -11,7 +12,7 @@ export class TareasController {
     create(@Body() createTareaDto: CreateTareaDto) {
         return this.tareasService.crearTarea(createTareaDto);
     }
-
+    @UseGuards(JWtAuthGuard)
     @Get()
     findAll() {
         return this.tareasService.findAll();
@@ -22,9 +23,14 @@ export class TareasController {
     //     return this.tareasService.findByUsuario(Asignado_a);
     // }
 
+    @UseGuards(JWtAuthGuard)
     @Get(':estadoTarea')
-    findByEstado(@Param('estadoTarea') estadoTarea: string) {
-        return this.tareasService.findByEstado(estadoTarea);
+    findByEstado(
+        @Param('estadoTarea') estadoTarea: string,
+        @Req() req: any, // Obtén el payload desde req.user
+    ) {
+        const user = req.user; // Payload del token JWT
+        return this.tareasService.findByEstado(estadoTarea, user);
     }
 
     @Put(':id')

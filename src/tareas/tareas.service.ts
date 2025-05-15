@@ -45,35 +45,36 @@ export class TareasService {
     //     return tarea;
     // }
 
-    async findByEstado(estadoTarea: string): Promise<Tareas[] | null> {
-    console.log("Estado:", estadoTarea);
+    async findByEstado(estadoTarea: string, user: any): Promise<Tareas[] | null> {
+        console.log("Estado:", estadoTarea);
+        console.log("user", user);
 
-    // Buscar el estado en la colección Estados
-    const estado = await this.estadoModel.findOne({ Estado: { $regex: new RegExp(`^${estadoTarea}$`, 'i') } }).exec();
-    console.log("Estado encontrado:", estado);
+        // Buscar el estado en la colección Estados
+        const estado = await this.estadoModel.findOne({ Estado: { $regex: new RegExp(`^${estadoTarea}$`, 'i') } }).exec();
+        console.log("Estado encontrado:", estado);
 
-    if (!estado) {
-        console.log("No se encontró el estado.");
-        return null;
+        if (!estado) {
+            console.log("No se encontró el estado.");
+            return null;
+        }
+        const tareas = await this.tareaModel
+            .find({ Estado: estado._id })
+            .populate([
+                { path: 'Asignado_a', select: 'Nombre' },
+                { path: 'Area', select: 'Area' },
+                { path: 'Estado' },
+                { path: 'Creado_por' }
+            ])
+            .exec();
+
+        // Validar si existen tareas
+        if (!tareas || tareas.length === 0) {
+            console.log("No se encontró ninguna tarea.");
+            return null; // Retorna null si no hay tareas
+        }
+        console.log("Tareas", tareas);
+        return tareas; // Retorna las tareas encontradas
     }
-    const tareas = await this.tareaModel
-        .find({ Estado: estado._id }) 
-        .populate([
-            { path: 'Asignado_a', select: 'Nombre' },
-            { path: 'Area', select: 'Area' },
-            { path: 'Estado' },
-            { path: 'Creado_por' }
-        ])
-        .exec();
-
-    // Validar si existen tareas
-    if (!tareas || tareas.length === 0) {
-        console.log("No se encontró ninguna tarea.");
-        return null; // Retorna null si no hay tareas
-    }
-    console.log("Tareas", tareas);
-    return tareas; // Retorna las tareas encontradas
-}
 
 
 

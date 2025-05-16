@@ -23,8 +23,6 @@ export class RolesGuard extends AuthGuard('jwt') implements CanActivate {
             context.getClass(),
         ]);
 
-        console.log("requiredRoles", requiredRoles);
-
         if (!requiredRoles) {
             // Si no se especifican roles, se permite el acceso
             return true;
@@ -33,7 +31,6 @@ export class RolesGuard extends AuthGuard('jwt') implements CanActivate {
         // Obtén el usuario del contexto
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        console.log("user", user);
 
         // Verifica si el usuario tiene al menos uno de los roles requeridos
         const hasRole = requiredRoles.some(role => user.rol?.includes(role));

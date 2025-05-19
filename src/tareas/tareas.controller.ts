@@ -2,11 +2,12 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, Req 
 import { TareasService } from './tareas.service';
 import { CreateTareaDto } from './dto/create-tarea.dto';
 import { UpdateTareaDto } from './dto/update-tarea.dto';
-import { RolesGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/jwt-roles.guard';
 import { Roles } from 'src/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('tareas')
-@UseGuards(RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class TareasController {
     constructor(private readonly tareasService: TareasService) { }
 
